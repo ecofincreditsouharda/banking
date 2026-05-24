@@ -47,7 +47,7 @@
   </div>
 
   <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxaTfe_-uJ_gilnrsDyMuWi1YNthB8dgze1gCd0Q9uj_UqRu0ou55F4mdBtGlxfV91ZCg/exec";   // ← Change this
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxaTfe_-uJ_gilnrsDyMuWi1YNthB8dgze1gCd0Q9uj_UqRu0ou55F4mdBtGlxfV91ZCg/exec";   // ← Must update this
 
     async function login() {
       const username = document.getElementById("username").value.trim();
@@ -55,16 +55,35 @@
       const messageDiv = document.getElementById("message");
 
       if (!username || !password) {
-        messageDiv.innerHTML = '<span class="text-danger">Username and Password are required</span>';
+        messageDiv.innerHTML = '<span class="text-danger">Username and Password required</span>';
         return;
       }
 
-      messageDiv.innerHTML = '<span class="text-primary">Logging in...</span>';
+      messageDiv.innerHTML = '<span class="text-primary">Authenticating...</span>';
 
-      // Simple client-side check for now (we'll connect real auth later)
-      setTimeout(() => {
-        window.location.href = "dashboard.html";
-      }, 800);
+      try {
+        const response = await fetch(WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            function: "checkLogin",
+            params: { username: username, password: password }
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          messageDiv.innerHTML = '<span class="text-success">Login Successful ✓</span>';
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 800);
+        } else {
+          messageDiv.innerHTML = '<span class="text-danger">Invalid username or password</span>';
+        }
+      } catch (error) {
+        messageDiv.innerHTML = '<span class="text-danger">Connection error. Check Web App URL.</span>';
+        console.error(error);
+      }
     }
   </script>
 </body>
