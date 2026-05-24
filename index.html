@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ecofin Credit - Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { 
+      background: linear-gradient(135deg, #0d6efd, #0a58ca); 
+      height: 100vh; 
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .login-card { 
+      max-width: 420px; 
+      margin: 120px auto; 
+      border-radius: 12px;
+    }
+    .brand-title {
+      font-weight: bold;
+      color: #0d6efd;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="login-card card shadow-lg">
+      <div class="card-body p-5">
+        <h2 class="text-center brand-title mb-1">ECOFIN CREDIT</h2>
+        <h6 class="text-center text-muted mb-4">Souharda Co-operative Ltd</h6>
+        
+        <div class="mb-3">
+          <label class="form-label">Username</label>
+          <input type="text" id="username" class="form-control" placeholder="Enter username">
+        </div>
+        
+        <div class="mb-4">
+          <label class="form-label">Password</label>
+          <input type="password" id="password" class="form-control" placeholder="Enter password">
+        </div>
+        
+        <button onclick="login()" class="btn btn-primary w-100 py-2">LOGIN</button>
+        
+        <div id="message" class="mt-3 text-center"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxaTfe_-uJ_gilnrsDyMuWi1YNthB8dgze1gCd0Q9uj_UqRu0ou55F4mdBtGlxfV91ZCg/exec";   // ← Change this
+
+    async function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const messageDiv = document.getElementById("message");
+
+      if (!username || !password) {
+        messageDiv.innerHTML = '<span class="text-danger">Username and Password are required</span>';
+        return;
+      }
+
+      messageDiv.innerHTML = '<span class="text-primary">Logging in...</span>';
+
+      // Simple client-side check for now (we'll connect real auth later)
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 800);
+    }
+  </script>
+</body>
+</html>
