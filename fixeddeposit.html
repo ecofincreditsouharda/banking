@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fixed Deposits - Ecofin Credit</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body { background: #f8f9fa; }
+    .sidebar { background: #0d6efd; color: white; min-height: 100vh; }
+    .nav-link { color: white !important; }
+    .nav-link:hover, .nav-link.active { background: rgba(255,255,255,0.2); }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-3 col-lg-2 sidebar p-3">
+        <h4 class="mb-4 text-center">ECOFIN CREDIT</h4>
+        <ul class="nav flex-column">
+          <li class="nav-item"><a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li class="nav-item"><a href="members.html" class="nav-link"><i class="fas fa-users"></i> Members</a></li>
+          <li class="nav-item"><a href="fixeddeposit.html" class="nav-link active"><i class="fas fa-piggy-bank"></i> Fixed Deposits</a></li>
+          <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-hand-holding-dollar"></i> Loans</a></li>
+          <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-money-bill"></i> Payments</a></li>
+          <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-file-alt"></i> Reports</a></li>
+          <li class="nav-item"><a href="index.html" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-md-9 col-lg-10 p-4">
+        <h2>Fixed Deposit Management</h2>
+
+        <div class="card shadow">
+          <div class="card-header bg-primary text-white">
+            <h5><i class="fas fa-piggy-bank"></i> New Fixed Deposit</h5>
+          </div>
+          <div class="card-body">
+            <form id="fdForm">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label>Member Number *</label>
+                  <input type="text" id="memberNumber" class="form-control" placeholder="ECO00001" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label>FD Amount (₹) *</label>
+                  <input type="number" id="fdAmount" class="form-control" required>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label>Interest Rate (%)</label>
+                  <input type="number" id="interestRate" value="7.5" step="0.01" class="form-control">
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label>Duration (Months)</label>
+                  <input type="number" id="duration" value="12" class="form-control">
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label>FD Date</label>
+                  <input type="date" id="fdDate" class="form-control">
+                </div>
+              </div>
+
+              <button type="button" onclick="createFD()" class="btn btn-primary btn-lg">
+                <i class="fas fa-save"></i> Create Fixed Deposit
+              </button>
+            </form>
+            <div id="message" class="mt-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxaTfe_-uJ_gilnrsDyMuWi1YNthB8dgze1gCd0Q9uj_UqRu0ou55F4mdBtGlxfV91ZCg/exec";
+
+    async function createFD() {
+      const messageDiv = document.getElementById("message");
+      messageDiv.innerHTML = "Creating FD...";
+
+      const fdData = {
+        MemberNumber: document.getElementById("memberNumber").value.trim(),
+        FDAmount: parseFloat(document.getElementById("fdAmount").value),
+        InterestRate: parseFloat(document.getElementById("interestRate").value),
+        DurationMonths: parseInt(document.getElementById("duration").value),
+        FDDate: document.getElementById("fdDate").value || new Date().toISOString().split('T')[0]
+      };
+
+      try {
+        const response = await fetch(WEB_APP_URL, {
+          method: 'POST',
+          body: JSON.stringify({ function: "addNewFD", params: fdData })
+        });
+        const result = await response.json();
+
+        if (result.success) {
+          messageDiv.innerHTML = `<span class="text-success">✅ FD Created Successfully!<br>FD Number: <b>${result.fdNumber}</b></span>`;
+          document.getElementById("fdForm").reset();
+        } else {
+          messageDiv.innerHTML = `<span class="text-danger">Failed: ${result.error || ''}</span>`;
+        }
+      } catch (error) {
+        messageDiv.innerHTML = `<span class="text-danger">Connection error</span>`;
+      }
+    }
+  </script>
+</body>
+</html>
